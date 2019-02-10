@@ -1,11 +1,13 @@
 from bs4 import BeautifulSoup
 import os
 import glob
-
+import pandas as pd
 
 if not os.path.exists("parsed_files"):
 	os.mkdir("parsed_files")
 
+# df = pd.DataFrame(columns=['scrapping_time','short_name','name','market_cap','price','volume','supply','24H_change'])
+df = pd.DataFrame()
 
 
 for one_file_name in glob.glob("html_files/*.html"):
@@ -25,12 +27,28 @@ for one_file_name in glob.glob("html_files/*.html"):
 		currency_volume = r.find("a",{"class": "volume"}).text
 		currency_supply = r.find("td", {"class": "circulating-supply"})['data-sort']
 		currency_change = r.find("td", {"class": "percent-change"})['data-sort']
-		print(scrapping_time)
-		print(currency_short_name)
-		print(currency_name)
-		print(currency_market_cap)
-		print(currency_price)
-		print(currency_volume)
-		print(currency_supply)
-		print(currency_change)
-		print("\n")
+		# print(scrapping_time)
+		# print(currency_short_name)
+		# print(currency_name)
+		# print(currency_market_cap)
+		# print(currency_price)
+		# print(currency_volume)
+		# print(currency_supply)
+		# print(currency_change)
+		# print("\n")
+		df = df.append({
+			'scrapping_time': scrapping_time, 
+			'short_name': currency_short_name,
+			'name': currency_name,
+			'market_cap': currency_market_cap,
+			'price': currency_price,
+			'volume': currency_volume,
+			'supply': currency_supply,
+			'24H_change': currency_change
+			}, ignore_index=True)
+
+
+
+# print(df)
+df.to_csv("parsed_files/coinmarketcap_dataset.csv")
+
